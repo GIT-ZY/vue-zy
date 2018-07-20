@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .content {
+            text-align: center;
+        }
+
+        ul {
+
+            text-align: center;
+        }
+
+        li {
+            list-style: none;
+            text-align: left;
+
+        }
+
+        li>span {
+            font-weight: bold;
+        }
+
+        li>a {
+            float: right;
+        }
+
+        .doce {
+            text-decoration: line-through;
+            color: #ccc;
+
+        }
+    </style>
+</head>
+
+
+<body>
+    <div class='content'>
+        <input type="text" v-model="someThing">
+        <input type="button" value="添加" v-on:click="add">
+        <div>true的:{{domnum}} 总数量:{{list.length}}</div>
+        <ul>
+            
+            <li v-bind:class="{doce:item.isDone}" v-on:click="dothis(index)" v-for="(item, index) in list">
+                <span>{{item.name}}</span>
+                <a v-on:click.stop="remove(index)" href="javascript:void(0)">8</a>
+            </li>
+        </ul>
+    </div>
+
+</body>
+
+</html>
+<!-- <script src="./lib/vue.js"></script>
+ -->
+ 
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script>
+    //保存数据的函数
+       function saveData(){
+           window.localStorage.setItem('list',JSON.stringify(list));
+       }
+
+    //读取保存的数据
+    let list = window.localStorage.getItem('list');
+    if (list) {
+        list = JSON.parse(list);
+    } else {
+        list= [{
+                name: '买菜',
+                isDone: true
+            },
+            {
+                name: '洗菜',
+                isDone: false
+            },
+            {
+                name: '切菜',
+                isDone: false
+            },
+            {
+                name: '烧菜',
+                isDone: false
+            }
+        ]
+    }
+
+    // function saveData() {
+    //     window.localStorage.setItem('list', JSON.stringify(app.list))
+    // }
+
+
+    let app = new Vue({
+        el: '.content',
+        data: {
+            someThing: '',
+            list
+        },
+        //绑定的方法
+        methods: {
+            add() {
+                this.list.push({
+                    name: this.someThing,
+                    isDone: false,
+
+                })
+                saveData();
+            },
+            dothis(index) {
+                this.list[index].isDone = !this.list[index].isDone;
+                saveData()
+            },
+
+            remove(index) {
+                this.list.splice(index, 1);
+                saveData()
+            },
+            //     saveData() {
+            //         // window.localStorage.setItem('list',JSON.stringify(list));
+            //         window.localStorage.setItem('list', JSON.stringify(app.list));
+            //}
+
+        },
+        computed: {
+            domnum() {
+                let num = 0
+                for (let i = 0; i < this.list.length; i++) {
+                    if (this.list[i].isDone) {
+                        num++;
+                    }
+                }
+                return num;
+            }
+        }
+
+
+    })
+</script>
